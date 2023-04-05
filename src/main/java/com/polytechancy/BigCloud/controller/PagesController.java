@@ -46,10 +46,10 @@ public class PagesController {
 
 		    SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
 		    String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
-		    System.out.println(output);
+		    //System.out.println(output);
 		    sshConnector.disconnect();
 		    String tableauhtml = TableauCreator.generertableau(output);
-		    System.out.println(tableauhtml);
+		    //System.out.println(tableauhtml);
 		    model.put("tableau", tableauhtml);
 		} catch (JSchException | IOException e) {
 		    e.printStackTrace();
@@ -170,9 +170,15 @@ public class PagesController {
     	sessionhttp.setAttribute("Nom",nom);
     	System.out.println(nom);
         String localFilePath = file.getOriginalFilename();
+		FileInfo.FileInformation fileInfo = FileInfo.getFileInfo(localFilePath);
+		System.out.println("Nom du fichier" + localFilePath);
+		System.out.println("Taille du fichier : " + fileInfo.getFileSize());
+		System.out.println("Date de création : " + fileInfo.getCreationTime());
+		System.out.println("Date de dernière modification : " + fileInfo.getLastModifiedTime());
         String remoteFilePath = "/var/BigCloud/" +nom+"/"+file.getOriginalFilename();
         byte[] bytes = file.getBytes();
-        Path path = Paths.get(localFilePath);
+		Path path = Paths.get(localFilePath);
+		System.out.println(path);
         Files.write(path, bytes);
         
         JSch jsch = new JSch();
