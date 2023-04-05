@@ -74,7 +74,7 @@ public class PagesController {
 
 	@GetMapping("/")
 	public String home() {
-		return "Rules";
+		return "Login";
 	}
 
 	@GetMapping("/login")
