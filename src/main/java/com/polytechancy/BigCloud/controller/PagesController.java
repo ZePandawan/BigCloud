@@ -1,5 +1,11 @@
 package com.polytechancy.BigCloud.controller;
 
+import com.polytechancy.BigCloud.*;
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -22,18 +28,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import com.polytechancy.BigCloud.DataBaseAccess;
-import com.polytechancy.BigCloud.MD5Hasher;
-import com.polytechancy.BigCloud.SshTunnel;
-import com.polytechancy.BigCloud.TableauCreator;
+import com.polytechancy.BigCloud.GetDataFromXML;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PagesController {
-	
-	
-	
 	@GetMapping("/accueil")
 	public String afficherPageAccueil(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
@@ -43,6 +43,7 @@ public class PagesController {
 			return "redirect:/login";
 		}
 		try {
+
 		    SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
 		    String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
 		    System.out.println(output);
@@ -52,10 +53,10 @@ public class PagesController {
 		    model.put("tableau", tableauhtml);
 		} catch (JSchException | IOException e) {
 		    e.printStackTrace();
-		    model.put("errorMsg", "Impossible de récurer vos documents");
+		    model.put("errorMsg", "Impossible de récupérer vos documents");
      	   return "Accueil";
 		}
-		 
+
 	    return "Accueil";
 	}
 	@GetMapping("/")
