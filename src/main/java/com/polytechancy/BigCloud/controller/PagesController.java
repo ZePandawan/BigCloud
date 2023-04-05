@@ -31,6 +31,9 @@ import com.jcraft.jsch.SftpException;
 import com.polytechancy.BigCloud.GetDataFromXML;
 
 import jakarta.servlet.http.HttpSession;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 @Controller
 public class PagesController {
@@ -43,30 +46,42 @@ public class PagesController {
 			return "redirect:/login";
 		}
 		try {
+			GetDataFromXML XML_datas = new GetDataFromXML();
+			ResourceLoader resourceLoader = new DefaultResourceLoader();
+			XML_datas.readXmlFile(resourceLoader);
 
-		    SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
-		    String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
-		    //System.out.println(output);
-		    sshConnector.disconnect();
-		    String tableauhtml = TableauCreator.generertableau(output);
-		    //System.out.println(tableauhtml);
-		    model.put("tableau", tableauhtml);
+
+		  SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
+		  String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
+		  //System.out.println(output);
+		  sshConnector.disconnect();
+		  String tableauhtml = TableauCreator.generertableau(output);
+		  //System.out.println(tableauhtml);
+		  model.put("tableau", tableauhtml);
+
 		} catch (JSchException | IOException e) {
-		    e.printStackTrace();
-		    model.put("errorMsg", "Impossible de récupérer vos documents");
-     	   return "Accueil";
+			e.printStackTrace();
+			model.put("errorMsg", "Impossible de récupérer vos documents");
+			return "Accueil";
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
 		}
 
-	    return "Accueil";
+		return "Accueil";
 	}
+
 	@GetMapping("/")
 	public String home() {
 		return "Rules";
 	}
+
 	@GetMapping("/login")
 	public String login() {
 		return "Login";
 	}
+
 	@PostMapping("/login")
 	public String postlogin(ModelMap model, @RequestParam String email, @RequestParam String password, String name, HttpSession session) {
 		try {
@@ -77,98 +92,108 @@ public class PagesController {
             System.out.println(sqlSelect);
             ResultSet resultSelect = db.executeQuery(sqlSelect);
             if (!resultSelect.next()) {
-            	System.out.println("COMPTE INCORRECT (INCONNU)");
-            	model.put("errorMsg", "Compte incorrect !");
-            	return "Login";
+				System.out.println("COMPTE INCORRECT (INCONNU)");
+				model.put("errorMsg", "Compte incorrect !");
+				return "Login";
             }
             else {
                 String mail = resultSelect.getString("mail");
                 String loginpassword = resultSelect.getString("password");
                 name = resultSelect.getString("name");
                if (!email.equals(mail)) {
-            	   model.put("errorMsg", "Compte incorrect !");
-            	   System.out.println("Compte incorrect (MAIL)!");
-            	   return "Login";
+				   model.put("errorMsg", "Compte incorrect !");
+				   System.out.println("Compte incorrect (MAIL)!");
+				   return "Login";
                }
                MD5Hasher hasher = new MD5Hasher();
-	           String passwordhashed = hasher.hash(password);
+				String passwordhashed = hasher.hash(password);
                if (!loginpassword.equals(passwordhashed)) {
-            	   model.put("errorMsg", "Compte incorrect !");
-            	   System.out.println("Compte incorrect (MDP)!");
-            	   return "Login";
+				   model.put("errorMsg", "Compte incorrect !");
+				   System.out.println("Compte incorrect (MDP)!");
+				   return "Login";
                }              
             db.close();
             }                     
-        } catch (SQLException e) {
+        } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
             System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
             model.put("errorMsg", "Compte incorrect !");
             return "Login";
         }
 		session.setAttribute("Nom",name);
 		String redirectUrl = String.format("/accueil");
-		
+
 		return "redirect:" + redirectUrl;
 	}
+
 	@GetMapping("/register")
 	public String register() {
 		return "Register";
 	}
+
 	@PostMapping("/register")
 	public String registered(ModelMap model, @RequestParam String email, @RequestParam String username,@RequestParam String password, @RequestParam String passwordconfirm) {
 		if (password.equals(passwordconfirm)) {
 			try {
-	            DataBaseAccess db = new DataBaseAccess();
-	            
-	            // Exécution d'une requête SELECT
-	            String sqlSelect = "SELECT mail,name FROM Users";
-	            ResultSet resultSelect = db.executeQuery(sqlSelect);
-	            while (resultSelect.next()) {
-	                String mail = resultSelect.getString("mail");
-	                String name = resultSelect.getString("name");
-	               if (email.equals(mail) || username.equals(name)) {
-	            	   model.put("errorMsg", "L'adresse mail ou le nom d'utilisateur existe déjà !");
-	            	   return "Register";
-	               }
-	            }
-	            MD5Hasher hasher = new MD5Hasher();
-	            String passwordhashed = hasher.hash(password);
-	            String sqlInsert = "INSERT INTO Users VALUES (null, '"+username+"','"+email+"','"+passwordhashed+"',"+"'1')";
-	            int rowsInserted = db.executeUpdate(sqlInsert);
-	            System.out.println(rowsInserted + " lignes ont été insérées.");
-	            
-	            db.close();
-	        } catch (SQLException e) {
-	            System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
-	        }
+				DataBaseAccess db = new DataBaseAccess();
+
+				// Exécution d'une requête SELECT
+				String sqlSelect = "SELECT mail,name FROM Users";
+				ResultSet resultSelect = db.executeQuery(sqlSelect);
+				while (resultSelect.next()) {
+					String mail = resultSelect.getString("mail");
+					String name = resultSelect.getString("name");
+					if (email.equals(mail) || username.equals(name)) {
+						model.put("errorMsg", "L'adresse mail ou le nom d'utilisateur existe déjà !");
+						return "Register";
+					}
+				}
+				MD5Hasher hasher = new MD5Hasher();
+				String passwordhashed = hasher.hash(password);
+				String sqlInsert = "INSERT INTO Users VALUES (null, '"+username+"','"+email+"','"+passwordhashed+"',"+"'1')";
+				int rowsInserted = db.executeUpdate(sqlInsert);
+				System.out.println(rowsInserted + " lignes ont été insérées.");
+
+				db.close();
+			} catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
+				System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
+			}
 			model.put("AcceptMsg", "Vous êtes correctement inscrit à BigCloud ! Vous pouvez désormais vous connecter");
 			try {
-			    SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
-			    String output = sshConnector.executeCommand("mkdir /var/BigCloud/"+username);
-			    System.out.println(output);
-			    sshConnector.disconnect();
+				GetDataFromXML XML_datas = new GetDataFromXML();
+				ResourceLoader resourceLoader = new DefaultResourceLoader();
+				XML_datas.readXmlFile(resourceLoader);
+				SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
+				String output = sshConnector.executeCommand("mkdir /var/BigCloud/"+username);
+				System.out.println(output);
+				sshConnector.disconnect();
 			} catch (JSchException | IOException e) {
-			    e.printStackTrace();
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				throw new RuntimeException(e);
+			} catch (SAXException e) {
+				throw new RuntimeException(e);
 			}
 
 			return "redirect:/login";
 		}
-		
+
 		model.put("errorMsg", "Les mots de passe ne sont pas identiques");
 		return "Register";
 	}
+
 	@GetMapping("/upload")
     public String upload(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
 		System.out.println(nom);
-    	return "Upload";
+		return "Upload";
     }
     
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, ModelMap model,HttpSession sessionhttp) throws IOException, JSchException, SftpException {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, ModelMap model,HttpSession sessionhttp) throws IOException, JSchException, SftpException, ParserConfigurationException, SAXException {
       if (!file.isEmpty()) {
-    	String nom = (String) sessionhttp.getAttribute("Nom");
-    	sessionhttp.setAttribute("Nom",nom);
-    	System.out.println(nom);
+		  String nom = (String) sessionhttp.getAttribute("Nom");
+		  sessionhttp.setAttribute("Nom",nom);
+		  System.out.println(nom);
         String localFilePath = file.getOriginalFilename();
 		FileInfo.FileInformation fileInfo = FileInfo.getFileInfo(localFilePath);
 		System.out.println("Nom du fichier" + localFilePath);
@@ -180,10 +205,15 @@ public class PagesController {
 		Path path = Paths.get(localFilePath);
 		System.out.println(path);
         Files.write(path, bytes);
-        
+
+
+		  GetDataFromXML XML_datas = new GetDataFromXML();
+		  ResourceLoader resourceLoader = new DefaultResourceLoader();
+		  XML_datas.readXmlFile(resourceLoader);
+
         JSch jsch = new JSch();
-        Session session = jsch.getSession("root", "bot.nightjs.ovh", 22);
-        session.setPassword("toutnwar619!");
+        Session session = jsch.getSession(XML_datas.getUser_ssh(), XML_datas.getHost_ssh(), 22);
+        session.setPassword(XML_datas.getPassword_ssh());
         session.setConfig("StrictHostKeyChecking", "no");
         session.connect();
         ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
@@ -191,17 +221,16 @@ public class PagesController {
         channelSftp.put(localFilePath, remoteFilePath);
         channelSftp.disconnect();
         session.disconnect();
-        
-        //sshFileTransferService.sendFileOverSsh("root", "toutnwar619!", "bot.nightjs.ovh", 3306, localFilePath, remoteFilePath);
+
         return "redirect:/accueil";
       } else {
-    	  model.put("errorMsg", "Erreur d'upload");
+		  model.put("errorMsg", "Erreur d'upload");
         return "Upload";
       }
     }
     
     @GetMapping("/success")
     public String success() {
-    	return "Success";
+		return "Success";
     }
 }
