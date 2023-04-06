@@ -42,12 +42,12 @@
       </div>
       <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
         <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-          <h1><a href="http://blog.stackfindover.com/" rel="dofollow">BigCloud</a></h1>
+          <h1><a rel="dofollow">BigCloud</a></h1>
         </div>
         <div class="formbg-outer">
           <div class="formbg">
             <div class="formbg-inner padding-horizontal--48">
-              <span class="padding-bottom--15">Connexion à votre espace cloud</span>
+              <span class="padding-bottom--15">Connexion ï¿½ votre espace cloud</span>
               <form method="post" id="stripe-login">
                 <div class="field padding-bottom--24">
                   <label for="email">Email</label>
@@ -57,7 +57,7 @@
                   <div class="grid--50-50">
                     <label for="password">Mot de passe</label>
                     <div class="reset-pass">
-                      <a href="#">Mot de passe oublié ?</a>
+                      <a href="#">Mot de passe oubliï¿½ ?</a>
                     </div>
                   </div>
                   <input type="password" name="password">
@@ -70,9 +70,9 @@
             </div>
           </div>
           <div class="footer-link padding-top--24">
-            <span>Pas de compte? <a href="/register">Créer un compte</a></span>
+            <span>Pas de compte? <a href="/register">Crï¿½er un compte</a></span>
             <div class="listing padding-top--24 padding-bottom--24 flex-flex center-center">
-              <span><a href="#">©BigCloud by REIX and COLINET</a></span>
+              <span><a href="#">ï¿½BigCloud by REIX and COLINET</a></span>
             </div>
           </div>
         </div>

@@ -37,6 +37,59 @@ import javax.xml.parsers.ParserConfigurationException;
 
 @Controller
 public class PagesController {
+
+	@PostMapping("/accueil")
+	public String postaccueil(ModelMap model, @RequestParam String remove, HttpSession session) {
+		String nom = (String) session.getAttribute("Nom");
+		System.out.println(nom);
+		session.setAttribute("Nom",nom);
+		try {
+			DataBaseAccess db = new DataBaseAccess();
+
+			// Exécution d'une requête SELECT
+			String sqlRequest = "DELETE FROM Files WHERE id_file='"+remove+"' AND owner='"+nom+"';";
+			int rowsInserted = db.executeUpdate(sqlRequest);
+			System.out.println(rowsInserted + " lignes ont été insérées.");
+			if (rowsInserted==1) {
+				try {
+					String sqlSelect = "SELECT name,file_location FROM Files WHERE id_file='"+remove+"';";
+					ResultSet resultSelect = db.executeQuery(sqlSelect);
+
+						GetDataFromXML XML_datas = new GetDataFromXML();
+						String name = resultSelect.getString("name");
+						String file_location = resultSelect.getString("file_location");
+						ResourceLoader resourceLoader = new DefaultResourceLoader();
+						XML_datas.readXmlFile(resourceLoader);
+
+
+						SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
+						String output = sshConnector.executeCommand("rm " + file_location + "'" + name + "'");
+						System.out.println(output);
+						sshConnector.disconnect();
+
+
+				} catch (JSchException | IOException e) {
+					e.printStackTrace();
+					model.put("errorMsg", "Impossible de récupérer vos documents");
+					return "Accueil";
+				} catch (ParserConfigurationException e) {
+					throw new RuntimeException(e);
+				} catch (SAXException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			db.close();
+
+		} catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
+			System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
+			model.put("errorMsg", "Problème lors de la suppression du fichier !");
+			return "Accueil";
+		}
+		session.setAttribute("Nom",nom);
+		String redirectUrl = String.format("/accueil");
+
+		return "redirect:" + redirectUrl;
+	}
 	@GetMapping("/accueil")
 	public String afficherPageAccueil(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
@@ -74,7 +127,7 @@ public class PagesController {
 
 	@GetMapping("/")
 	public String home() {
-		return "Login";
+		return "redirect:/login";
 	}
 
 	@GetMapping("/login")
