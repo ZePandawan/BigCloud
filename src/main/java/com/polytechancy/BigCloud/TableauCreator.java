@@ -28,18 +28,23 @@ public class TableauCreator {
             DataBaseAccess db = new DataBaseAccess();
 
             // Exécution d'une requête SELECT
-            String sqlSelect = "SELECT name,size,creation_date,time FROM Files WHERE owner='"+input+"';";
+            String sqlSelect = "SELECT id_file,name,size,creation_date,time FROM Files WHERE owner='"+input+"';";
             ResultSet resultSelect = db.executeQuery(sqlSelect);
             while (resultSelect.next()) {
+                int id_file = resultSelect.getInt("id_file");
                 String name = resultSelect.getString("name");
                 Double size = resultSelect.getDouble("size");
                 String creation_date = resultSelect.getString("creation_date");
                 String time = resultSelect.getString("time");
+                String form = "<td><form method='post'><input type='hidden' name='remove' value='" + id_file + "'><input type='submit' value='delete'></form>";
+                String formdownload = "<td><form method='post'><input type='hidden' name='download' value='" + id_file + "'><input type='submit' value='download'></form>";
                 tableau.append("<tr>\n");
                 tableau.append("<td>").append(name).append("</td>\n");
                 tableau.append("<td>").append(size).append(" octets").append("</td>\n");
                 tableau.append("<td>").append(creation_date).append("</td>\n");
                 tableau.append("<td>").append(time).append("</td>\n");
+                tableau.append("<td>").append(form).append("</td>\n");
+                tableau.append("<td>").append(formdownload).append("</td>\n");
                 tableau.append("</tr>\n");
             }
             tableau.append("</tbody>\n");

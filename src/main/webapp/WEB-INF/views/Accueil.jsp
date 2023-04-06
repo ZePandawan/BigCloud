@@ -1,8 +1,8 @@
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>BigCloud: Accueil</title>
-  <style><%@include file="/WEB-INF/Style/style.css"%></style>
+    <meta charset="utf-8">
+    <title>BigCloud: Accueil</title>
+    <style><%@include file="/WEB-INF/Style/style.css"%></style>
 </head>
 <h1><a rel="dofollow">BigCloud</a></h1>
 <h2 class="h2-login">Bienvenue ${Nom}</h2>

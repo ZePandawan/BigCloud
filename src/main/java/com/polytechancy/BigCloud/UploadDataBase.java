@@ -24,32 +24,26 @@ public class UploadDataBase {
     public void upload() {
         String filenameformated = filename.replaceAll(" ", "\\\\ ");
         String localisation = "ls -al /var/BigCloud/"+username+"/"+filenameformated;
-        System.out.println(localisation);
+        String file_location = "/var/BigCloud/"+username+"/";
+        System.out.println(file_location);
         try {
             GetDataFromXML XML_datas = new GetDataFromXML();
             ResourceLoader resourceLoader = new DefaultResourceLoader();
             XML_datas.readXmlFile(resourceLoader);
             SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
             String output = sshConnector.executeCommand(localisation);
-            System.out.println(output);
+            System.out.println("output ssh"+output);
             sshConnector.disconnect();
             String[] parts = output.split("\\s+");
 
             for (String part : parts) {
-                System.out.println(part);
             }
-            System.out.println("Nom du fichier "+filename);
-            System.out.println("Taille "+parts[4]);
-            System.out.println("Date "+parts[6]+parts[5]);
-            System.out.println("Heure "+parts[7]);
-            System.out.println("Utilisateur "+username);
-            System.out.println("Localisation /var/BigCloud/"+username+"/"+filenameformated);
             try {
                 DataBaseAccess db = new DataBaseAccess();
 
-                String sqlInsert = "INSERT INTO Files VALUES (null, '"+filename+"', '"+parts[4]+"', '"+parts[6]+" "+parts[5]+"', '"+localisation+"','"+username+"',null, '"+parts[7]+"')";
+                String sqlInsert = "INSERT INTO Files VALUES (null, '"+filename+"', '"+parts[4]+"', '"+parts[6]+" "+parts[5]+"', '"+file_location+"','"+username+"',null, '"+parts[7]+"')";
                 int rowsInserted = db.executeUpdate(sqlInsert);
-                System.out.println(rowsInserted + " lignes ont été insérées.");
+                System.out.println(rowsInserted + " ligne inséré dans Files.");
 
                 db.close();
             } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
