@@ -1,11 +1,16 @@
 package com.polytechancy.BigCloud.controller;
 
 import com.polytechancy.BigCloud.*;
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -253,6 +259,61 @@ public class PagesController {
 			model.put("errorMsg", "Erreur d'upload");
 			return "Upload";
 		}
+	}
+
+	@GetMapping("/download")
+	public ResponseEntity<byte[]> Download(@RequestParam("download") String id_file, HttpSession sessionhttp) throws IOException, ParserConfigurationException, SAXException {
+
+		String nom = (String) sessionhttp.getAttribute("Nom");
+
+		String remoteFilePath = "/var/BigCloud/"+nom+"/CloudDrive.iml"; // Chemin du fichier distant
+		String fileName = "CloudDrive.iml"; // Nom du fichier à télécharger
+
+		InputStream inputStream = null;
+		ByteArrayOutputStream outputStream = null;
+
+		GetDataFromXML XML_datas = new GetDataFromXML();
+		ResourceLoader resourceLoader = new DefaultResourceLoader();
+		XML_datas.readXmlFile(resourceLoader);
+
+		try {
+			JSch jsch = new JSch();
+			Session session = jsch.getSession(XML_datas.getUser_ssh(), XML_datas.getHost_ssh(), 22); // Paramètres de connexion SSH
+			session.setPassword(XML_datas.getPassword_ssh());
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+
+			ChannelSftp channelSftp = (ChannelSftp) session.openChannel("sftp");
+			channelSftp.connect();
+			inputStream = channelSftp.get(remoteFilePath);
+
+			outputStream = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int length;
+
+			while ((length = inputStream.read(buffer)) > 0) {
+				outputStream.write(buffer, 0, length);
+			}
+
+		} catch (JSchException | SftpException e) {
+			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+			if (outputStream != null) {
+				outputStream.close();
+			}
+		}
+
+		byte[] bytes = outputStream.toByteArray();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData(fileName, fileName);
+		headers.setContentLength(bytes.length);
+
+		return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
 	}
 
 	@GetMapping("/success")
