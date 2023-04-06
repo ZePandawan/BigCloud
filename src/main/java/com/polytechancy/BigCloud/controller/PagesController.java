@@ -42,53 +42,30 @@ public class PagesController {
 	public String postaccueil(ModelMap model, @RequestParam String remove, HttpSession session) {
 		String nom = (String) session.getAttribute("Nom");
 		System.out.println(nom);
-		session.setAttribute("Nom",nom);
+		session.setAttribute("Nom", nom);
+		String sqlSelect = "SELECT name,file_location FROM Files WHERE id_file="+remove+";";
+		String[] values = RemoveFile.executeQuery(sqlSelect);
+		System.out.println(values[0]+" "+values[1]);
 		try {
-			DataBaseAccess db = new DataBaseAccess();
-
-			// Exécution d'une requête SELECT
-			String sqlRequest = "DELETE FROM Files WHERE id_file='"+remove+"' AND owner='"+nom+"';";
-			int rowsInserted = db.executeUpdate(sqlRequest);
-			System.out.println(rowsInserted + " lignes ont été insérées.");
-			if (rowsInserted==1) {
-				try {
-					String sqlSelect = "SELECT name,file_location FROM Files WHERE id_file='"+remove+"';";
-					ResultSet resultSelect = db.executeQuery(sqlSelect);
-
-						GetDataFromXML XML_datas = new GetDataFromXML();
-						String name = resultSelect.getString("name");
-						String file_location = resultSelect.getString("file_location");
-						ResourceLoader resourceLoader = new DefaultResourceLoader();
-						XML_datas.readXmlFile(resourceLoader);
-
-
-						SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
-						String output = sshConnector.executeCommand("rm " + file_location + "'" + name + "'");
-						System.out.println(output);
-						sshConnector.disconnect();
-
-
-				} catch (JSchException | IOException e) {
-					e.printStackTrace();
-					model.put("errorMsg", "Impossible de récupérer vos documents");
-					return "Accueil";
-				} catch (ParserConfigurationException e) {
-					throw new RuntimeException(e);
-				} catch (SAXException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			db.close();
-
-		} catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
-			System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
-			model.put("errorMsg", "Problème lors de la suppression du fichier !");
-			return "Accueil";
+			GetDataFromXML XML_datas = new GetDataFromXML();
+			ResourceLoader resourceLoader = new DefaultResourceLoader();
+			XML_datas.readXmlFile(resourceLoader);
+			SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
+			String output = sshConnector.executeCommand("rm "+values[1]+"'"+values[0]+"'");
+			System.out.println("rm "+values[1]+"'"+values[0]+"'");
+			System.out.println(output);
+			sshConnector.disconnect();
+		} catch (JSchException | IOException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(e);
+		} catch (SAXException e) {
+			throw new RuntimeException(e);
 		}
-		session.setAttribute("Nom",nom);
-		String redirectUrl = String.format("/accueil");
-
-		return "redirect:" + redirectUrl;
+		String sqlDelete = "DELETE FROM Files WHERE id_file="+remove+" AND owner='"+nom+"';";
+		System.out.println(sqlDelete);
+		RemoveFile.removeRow(sqlDelete);
+		return "redirect:/accueil";
 	}
 	@GetMapping("/accueil")
 	public String afficherPageAccueil(HttpSession session, ModelMap model) {
