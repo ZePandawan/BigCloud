@@ -223,6 +223,14 @@ public class PagesController {
 		return "Upload";
 	}
 
+	@GetMapping("/share")
+	public String share(HttpSession session, ModelMap model) {
+		String nom = (String) session.getAttribute("Nom");
+		System.out.println(nom);
+		String selectinput = ShareCreator.SelectCreator(nom);
+		model.put("share", selectinput);
+		return "Share";
+	}
 	@PostMapping("/upload")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file, ModelMap model,HttpSession sessionhttp) throws IOException, JSchException, SftpException, ParserConfigurationException, SAXException {
 		if (!file.isEmpty()) {
