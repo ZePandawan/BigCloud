@@ -13,7 +13,7 @@
 
 <div>${tableau}</div>
 
-<a href="partage">
+<a href="share">
     <button class="button-login">Partager un fichier</button>
 </a>
 

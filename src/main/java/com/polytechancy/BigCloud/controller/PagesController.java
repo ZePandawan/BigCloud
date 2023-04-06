@@ -226,10 +226,17 @@ public class PagesController {
 	@GetMapping("/share")
 	public String share(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
-		System.out.println(nom);
 		String selectinput = ShareCreator.SelectCreator(nom);
 		model.put("share", selectinput);
 		return "Share";
+	}
+
+	@PostMapping("/share")
+	public String postshare(HttpSession session, ModelMap model, @RequestParam String file, @RequestParam String user) {
+		String nom = (String) session.getAttribute("Nom");
+		String[] values = ShareFile.executeQuery(file,user);
+		model.put("share", "Le document a bien été partagé à"+values[0]);
+		return "redirect:/accueil";
 	}
 	@PostMapping("/upload")
 	public String handleFileUpload(@RequestParam("file") MultipartFile file, ModelMap model,HttpSession sessionhttp) throws IOException, JSchException, SftpException, ParserConfigurationException, SAXException {
