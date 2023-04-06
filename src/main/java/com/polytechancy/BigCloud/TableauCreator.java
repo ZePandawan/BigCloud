@@ -1,10 +1,17 @@
 package com.polytechancy.BigCloud;
 
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class TableauCreator {
 	public static String generertableau(String input) {
         StringBuilder tableau = new StringBuilder();
         tableau.append("<table>\n");
-        
+        tableau.append("<caption> Mes documents </caption>\n");
         // Header row
         tableau.append("<thead>\n");
         tableau.append("<tr>\n");
@@ -17,21 +24,62 @@ public class TableauCreator {
         
         // Data rows
         tableau.append("<tbody>\n");
-    
-        String[] filepart = input.split("/");
-        String fileName = filepart[filepart.length - 1];
-        String[] lines = input.split("\\r?\\n");
-        for (String line : lines) {
-            String[] parts = line.split("\\s+");
+        try {
+            DataBaseAccess db = new DataBaseAccess();
+
+            // Exécution d'une requête SELECT
+            String sqlSelect = "SELECT name,size,creation_date,time FROM Files WHERE owner='"+input+"';";
+            ResultSet resultSelect = db.executeQuery(sqlSelect);
+            while (resultSelect.next()) {
+                String name = resultSelect.getString("name");
+                Double size = resultSelect.getDouble("size");
+                String creation_date = resultSelect.getString("creation_date");
+                String time = resultSelect.getString("time");
+                tableau.append("<tr>\n");
+                tableau.append("<td>").append(name).append("</td>\n");
+                tableau.append("<td>").append(size).append(" octets").append("</td>\n");
+                tableau.append("<td>").append(creation_date).append("</td>\n");
+                tableau.append("<td>").append(time).append("</td>\n");
+                tableau.append("</tr>\n");
+            }
+            tableau.append("</tbody>\n");
+            tableau.append("</table>");
+            tableau.append("<table>\n");
+            tableau.append("<caption> Documents partagés </caption>\n");
+            // Header row
+            tableau.append("<thead>\n");
             tableau.append("<tr>\n");
-            tableau.append("<td>").append(fileName).append("</td>\n");
-            tableau.append("<td>").append(parts[4]).append(" octets").append("</td>\n");
-            tableau.append("<td>").append(parts[6]).append(" ").append(parts[5]).append("</td>\n");
-            tableau.append("<td>").append(parts[7]).append("</td>\n");
+            tableau.append("<th>Nom du fichier</th>\n");
+            tableau.append("<th>Taille du fichier</th>\n");
+            tableau.append("<th>Date de création</th>\n");
+            tableau.append("<th>Heure de dernière modification</th>\n");
             tableau.append("</tr>\n");
+            tableau.append("</thead>\n");
+
+            // Data rows
+            tableau.append("<tbody>\n");
+            String sqlSelect2 = "SELECT name,size,creation_date,time FROM Files WHERE shares='"+input+"';";
+            ResultSet resultSelect2 = db.executeQuery(sqlSelect2);
+            while (resultSelect2.next()) {
+                String name = resultSelect2.getString("name");
+                Double size = resultSelect2.getDouble("size");
+                String creation_date = resultSelect2.getString("creation_date");
+                String time = resultSelect2.getString("time");
+                tableau.append("<tr>\n");
+                tableau.append("<td>").append(name).append("</td>\n");
+                tableau.append("<td>").append(size).append(" octets").append("</td>\n");
+                tableau.append("<td>").append(creation_date).append("</td>\n");
+                tableau.append("<td>").append(time).append("</td>\n");
+                tableau.append("</tr>\n");
+            }
+            tableau.append("</tbody>\n");
+            tableau.append("</table>");
+            db.close();
+        } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
+            System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
+            return "Login";
         }
-        tableau.append("</tbody>\n");
-        tableau.append("</table>");
+
         return tableau.toString();
     }
 }

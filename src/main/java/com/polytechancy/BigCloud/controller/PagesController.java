@@ -51,11 +51,11 @@ public class PagesController {
 			XML_datas.readXmlFile(resourceLoader);
 
 
-		  SshTunnel sshConnector = new SshTunnel("bot.nightjs.ovh", "root", "toutnwar619!");
+		  SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());;
 		  String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
 		  //System.out.println(output);
 		  sshConnector.disconnect();
-		  String tableauhtml = TableauCreator.generertableau(output);
+		  String tableauhtml = TableauCreator.generertableau(nom);
 		  //System.out.println(tableauhtml);
 		  model.put("tableau", tableauhtml);
 
@@ -74,7 +74,7 @@ public class PagesController {
 
 	@GetMapping("/")
 	public String home() {
-		return "Rules";
+		return "Login";
 	}
 
 	@GetMapping("/login")
@@ -89,7 +89,6 @@ public class PagesController {
             
             // Exécution d'une requête SELECT
             String sqlSelect = "SELECT mail,password,name FROM Users WHERE mail='"+email+"';";
-            System.out.println(sqlSelect);
             ResultSet resultSelect = db.executeQuery(sqlSelect);
             if (!resultSelect.next()) {
 				System.out.println("COMPTE INCORRECT (INCONNU)");
@@ -195,14 +194,9 @@ public class PagesController {
 		  sessionhttp.setAttribute("Nom",nom);
 		  System.out.println(nom);
         String localFilePath = file.getOriginalFilename();
-		FileInfo.FileInformation fileInfo = FileInfo.getFileInfo(localFilePath);
-		System.out.println("Nom du fichier" + localFilePath);
-		System.out.println("Taille du fichier : " + fileInfo.getFileSize());
-		System.out.println("Date de création : " + fileInfo.getCreationTime());
-		System.out.println("Date de dernière modification : " + fileInfo.getLastModifiedTime());
-        String remoteFilePath = "/var/BigCloud/" +nom+"/"+file.getOriginalFilename();
-        byte[] bytes = file.getBytes();
 		Path path = Paths.get(localFilePath);
+        String remoteFilePath = "/var/BigCloud/"+nom+"/"+file.getOriginalFilename();
+        byte[] bytes = file.getBytes();
 		System.out.println(path);
         Files.write(path, bytes);
 
@@ -221,6 +215,8 @@ public class PagesController {
         channelSftp.put(localFilePath, remoteFilePath);
         channelSftp.disconnect();
         session.disconnect();
+		UploadDataBase uploader = new UploadDataBase(nom, localFilePath);
+		uploader.upload();
 
         return "redirect:/accueil";
       } else {
