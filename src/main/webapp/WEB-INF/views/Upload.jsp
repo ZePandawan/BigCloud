@@ -15,15 +15,20 @@
       <span id="file-name"></span>
       <br>
       <input id="file-input" type="file" name="file" class="inputfile" />
+        <input id="test_path" name="test_path" type="hidden" />
       <input type="submit" value="Upload" class="btn-upload" />
     </form>
 </div>
 <script>
-    var fileInput = document.getElementById('file-input');
-    var fileName = document.getElementById('file-name');
+    const fileInput = document.getElementById('file-input');
+    const fileName = document.getElementById('file-name');
     fileInput.addEventListener('change', function() {
-    fileName.textContent = this.value.split("\\").pop();
+        console.log(this.value);
+        fileName.textContent = this.value.split("\\").pop();
     });
+
+
+
   </script>
 </body>
 </html>

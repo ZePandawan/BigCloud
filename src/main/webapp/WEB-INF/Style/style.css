@@ -331,3 +331,33 @@ a.ssolink {
 .btn-upload:hover {
   background-color: #0062cc;
 }
+
+
+
+.h2-login {
+    font-size: 2em; /* taille de police */
+    font-weight: bold; /* poids de police */
+    color: #333; /* couleur de texte */
+    margin-bottom: 1em; /* espacement en bas */
+}
+
+
+.button-login {
+    display: inline-block; /* affichage en ligne */
+    padding: 0.5em 1em; /* rembourrage */
+    border: 2px solid #5469d4; /* bordure */
+    background-color: #5469d4; /* couleur de fond */
+    color: #fff; /* couleur de texte */
+    font-size: 1em; /* taille de police */
+    font-weight: bold; /* poids de police */
+    text-align: center; /* alignement du texte */
+    border-radius: 0.5em; /* rayon de la bordure */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* transition en douceur */
+}
+
+/* Style pour bouton au survol */
+.button-login:hover {
+    background-color: #fff; /* couleur de fond au survol */
+    color: #5469d4; /* couleur de texte au survol */
+    cursor: pointer; /* curseur pointeur au survol */
+}
