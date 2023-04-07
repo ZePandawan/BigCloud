@@ -261,13 +261,24 @@ public class PagesController {
 		}
 	}
 
-	@GetMapping("/download")
-	public ResponseEntity<byte[]> Download(@RequestParam("download") String id_file, HttpSession sessionhttp) throws IOException, ParserConfigurationException, SAXException {
+	@PostMapping("/download")
+	public ResponseEntity<byte[]> Download(@RequestParam("download") String id_file, HttpSession sessionhttp) throws IOException, ParserConfigurationException, SAXException, SQLException {
 
-		String nom = (String) sessionhttp.getAttribute("Nom");
 
-		String remoteFilePath = "/var/BigCloud/"+nom+"/CloudDrive.iml"; // Chemin du fichier distant
-		String fileName = "CloudDrive.iml"; // Nom du fichier à télécharger
+		String query = "SELECT name, file_location FROM Files WHERE id_file ="+id_file;
+
+		DataBaseAccess db = new DataBaseAccess();
+		ResultSet resultSelect = db.executeQuery(query);
+		String remoteFilePath = null;
+		String fileName = null;
+		while (resultSelect.next()) {
+			String nom = resultSelect.getString("name");
+			String file_path = resultSelect.getString("file_location");
+			remoteFilePath = file_path + nom; // Chemin du fichier distant
+			fileName = nom; // Nom du fichier à télécharger
+
+		}
+
 
 		InputStream inputStream = null;
 		ByteArrayOutputStream outputStream = null;
@@ -275,6 +286,8 @@ public class PagesController {
 		GetDataFromXML XML_datas = new GetDataFromXML();
 		ResourceLoader resourceLoader = new DefaultResourceLoader();
 		XML_datas.readXmlFile(resourceLoader);
+
+		db.close();
 
 		try {
 			JSch jsch = new JSch();
