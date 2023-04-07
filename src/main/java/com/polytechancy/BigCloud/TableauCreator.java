@@ -30,7 +30,7 @@ public class TableauCreator {
         tableau.append("<tbody>\n");
         try {
             DataBaseAccess db = new DataBaseAccess();
-
+            Double sizeused = 0.0;
             // Exécution d'une requête SELECT
             String sqlSelect = "SELECT id_file,name,size,creation_date,time FROM Files WHERE owner='"+input+"';";
             ResultSet resultSelect = db.executeQuery(sqlSelect);
@@ -38,6 +38,7 @@ public class TableauCreator {
                 int id_file = resultSelect.getInt("id_file");
                 String name = resultSelect.getString("name");
                 Double size = resultSelect.getDouble("size");
+                sizeused += size;
                 String creation_date = resultSelect.getString("creation_date");
                 String time = resultSelect.getString("time");
                 String form = "<td><form method='post'><input type='hidden' name='remove' value='" + id_file + "'><input type='submit' class='button-tab' value='delete'></form>";
@@ -102,6 +103,8 @@ public class TableauCreator {
             }
             tableau.append("</tbody>\n");
             tableau.append("</table>");
+            tableau.append("<br>");
+            tableau.append("Espace utilisé:"+sizeused/1000+" Ko/1 Go");
             db.close();
         } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
             System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
