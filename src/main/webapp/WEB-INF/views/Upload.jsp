@@ -6,17 +6,17 @@
 </head>
 <body>
 <div class="container" align="center">
-	<h1 class="upload-h1">File Upload Form</h1>
+	<h1 class="upload-h1">Televersez votre fichier !</h1>
 	<form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
       <label for="file-input" class="custom-file-upload">
-        <i class="fa fa-cloud-upload"></i> Choose file...
+        <i class="fa fa-cloud-upload"></i> Choisissez le fichier...
       </label>
       <span id="error">${errorMsg}</span>
       <span id="file-name"></span>
       <br>
       <input id="file-input" type="file" name="file" class="inputfile" />
         <input id="test_path" name="test_path" type="hidden" />
-      <input type="submit" value="Upload" class="btn-upload" />
+      <input type="submit" value="Envoyer" class="btn-upload" />
     </form>
 </div>
 <script>

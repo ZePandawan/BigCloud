@@ -282,7 +282,7 @@ a.ssolink {
 
 
 .container{
-    max-width: 600px;
+    max-width: 1000px;
     margin: auto;
     padding: 20px;
     background-color: #fff;
@@ -359,10 +359,8 @@ a.ssolink {
 }
 
 .button-login {
-    position: static;
-    float: right;
     display: inline-block; /* affichage en ligne */
-    padding: 0.5em 5em; /* rembourrage */
+    padding: 0.5em 4em; /* rembourrage */
     border: 2px solid #5469d4; /* bordure */
     background-color: #5469d4; /* couleur de fond */
     color: #fff; /* couleur de texte */
@@ -372,4 +370,39 @@ a.ssolink {
     border-radius: 0.5em; /* rayon de la bordure */
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* transition en douceur */
     margin-top : 0;
-t(è)}
+}
+
+
+
+.button-tab:hover {
+    background-color: #fff; /* couleur de fond au survol */
+    color: #5469d4; /* couleur de texte au survol */
+    cursor: pointer; /* curseur pointeur au survol */
+}
+
+
+.button-tab {
+    display: inline-block; /* affichage en ligne */
+    border: 2px solid #5469d4; /* bordure */
+    background-color: #5469d4; /* couleur de fond */
+    color: #fff; /* couleur de texte */
+    font-weight: bold; /* poids de police */
+    text-align: center; /* alignement du texte */
+    border-radius: 0.5em; /* rayon de la bordure */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* transition en douceur */
+    margin-top : 0;
+}
+
+
+.caption-tab{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #f2f2f2;
+}

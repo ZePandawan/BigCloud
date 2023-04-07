@@ -4,17 +4,21 @@
     <title>BigCloud: Accueil</title>
     <style><%@include file="/WEB-INF/Style/style.css"%></style>
 </head>
-<h1><a rel="dofollow">BigCloud</a></h1>
-<a href="upload">
-    <button class="button-login">Televerser un fichier</button>
-</a>
-<h2 class="h2-login">Bienvenue ${Nom}</h2>
-<h3> <span id="error">${errorMsg}</span></h3>
+<body>
+    <div class="container" align="center">
+        <h1><a rel="dofollow">BigCloud</a></h1>
 
-<div>${tableau}</div>
+        <h2 class="h2-login">Bienvenue ${Nom}</h2>
+        <h3> <span id="error">${errorMsg}</span></h3>
 
-<a href="share">
-    <button class="button-login">Partager un fichier</button>
-</a>
-
+        <div>${tableau}</div>
+        <br/>
+        <a href="share">
+            <button class="button-login">Partager un fichier</button>
+        </a>
+        <a href="upload">
+            <button class="button-login">Televerser un fichier</button>
+        </a>
+    </div>
+</body>
 </html>

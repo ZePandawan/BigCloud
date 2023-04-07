@@ -11,7 +11,7 @@ public class TableauCreator {
 	public static String generertableau(String input) {
         StringBuilder tableau = new StringBuilder();
         tableau.append("<table>\n");
-        tableau.append("<caption> Mes documents </caption>\n");
+        tableau.append("<caption class='caption-tab'> Mes documents </caption>\n");
         // Header row
         tableau.append("<thead>\n");
         tableau.append("<tr>\n");
@@ -19,6 +19,10 @@ public class TableauCreator {
         tableau.append("<th>Taille du fichier</th>\n");
         tableau.append("<th>Date de création</th>\n");
         tableau.append("<th>Heure de dernière modification</th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
         tableau.append("</tr>\n");
         tableau.append("</thead>\n");
         
@@ -36,8 +40,8 @@ public class TableauCreator {
                 Double size = resultSelect.getDouble("size");
                 String creation_date = resultSelect.getString("creation_date");
                 String time = resultSelect.getString("time");
-                String form = "<td><form method='post'><input type='hidden' name='remove' value='" + id_file + "'><input type='submit' value='delete'></form>";
-                String formdownload = "<td><form method='post' action='/download'><input type='hidden' name='download' value='" + id_file + "'><input type='submit' value='download'></form>";
+                String form = "<td><form method='post'><input type='hidden' name='remove' value='" + id_file + "'><input type='submit' class='button-tab' value='delete'></form>";
+                String formdownload = "<td><form method='post' action='/download'><input type='hidden' name='download' value='" + id_file + "'><input type='submit' class='button-tab' value='download'></form>";
                 tableau.append("<tr>\n");
                 tableau.append("<td>").append(name).append("</td>\n");
                 tableau.append("<td>").append(size).append(" octets").append("</td>\n");
@@ -49,8 +53,9 @@ public class TableauCreator {
             }
             tableau.append("</tbody>\n");
             tableau.append("</table>");
+            tableau.append("<br>");
             tableau.append("<table>\n");
-            tableau.append("<caption> Documents partagés </caption>\n");
+            tableau.append("<caption class='caption-tab'> Documents partagés </caption>\n");
             // Header row
             tableau.append("<thead>\n");
             tableau.append("<tr>\n");
@@ -59,6 +64,9 @@ public class TableauCreator {
             tableau.append("<th>Date de création</th>\n");
             tableau.append("<th>Heure de dernière modification</th>\n");
             tableau.append("<th>Partagé par :</th>\n");
+            tableau.append("<th></th>\n");
+            tableau.append("<th></th>\n");
+            tableau.append("<th></th>\n");
             tableau.append("</tr>\n");
             tableau.append("</thead>\n");
 
@@ -88,7 +96,7 @@ public class TableauCreator {
                 tableau.append("<td>").append(creation_date).append("</td>\n");
                 tableau.append("<td>").append(time).append("</td>\n");
                 tableau.append("<td>").append(owner).append("</td>\n");
-                String formdownload = "<td><form method='post'><input type='hidden' name='download' value='" + id_file + "'><input type='submit' value='download'></form>";
+                String formdownload = "<td><form method='post' action='/download'><input type='hidden' name='download' value='" + id_file + "'><input type='submit' class='button-tab' value='download'></form>";
                 tableau.append("<td>").append(formdownload).append("</td>\n");
                 tableau.append("</tr>\n");
             }
