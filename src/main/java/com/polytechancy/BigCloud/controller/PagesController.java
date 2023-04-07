@@ -219,6 +219,9 @@ public class PagesController {
 	@GetMapping("/upload")
 	public String upload(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
+		if (nom == null) {
+			return "redirect:/login";
+		}
 		System.out.println(nom);
 		return "Upload";
 	}
@@ -226,6 +229,9 @@ public class PagesController {
 	@GetMapping("/share")
 	public String share(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
+		if (nom == null) {
+			return "redirect:/login";
+		}
 		String selectinput = ShareCreator.SelectCreator(nom);
 		model.put("share", selectinput);
 		return "Share";
