@@ -359,8 +359,6 @@ a.ssolink {
 }
 
 .button-login {
-    position: static;
-    float: right;
     display: inline-block; /* affichage en ligne */
     padding: 0.5em 5em; /* rembourrage */
     border: 2px solid #5469d4; /* bordure */
@@ -372,4 +370,25 @@ a.ssolink {
     border-radius: 0.5em; /* rayon de la bordure */
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* transition en douceur */
     margin-top : 0;
-t(è)}
+}
+
+
+
+.button-tab:hover {
+    background-color: #fff; /* couleur de fond au survol */
+    color: #5469d4; /* couleur de texte au survol */
+    cursor: pointer; /* curseur pointeur au survol */
+}
+
+
+.button-tab {
+    display: inline-block; /* affichage en ligne */
+    border: 2px solid #5469d4; /* bordure */
+    background-color: #5469d4; /* couleur de fond */
+    color: #fff; /* couleur de texte */
+    font-weight: bold; /* poids de police */
+    text-align: center; /* alignement du texte */
+    border-radius: 0.5em; /* rayon de la bordure */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* transition en douceur */
+    margin-top : 0;
+}
