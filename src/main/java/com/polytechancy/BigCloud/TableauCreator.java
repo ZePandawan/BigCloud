@@ -11,7 +11,7 @@ public class TableauCreator {
 	public static String generertableau(String input) {
         StringBuilder tableau = new StringBuilder();
         tableau.append("<table>\n");
-        tableau.append("<caption> Mes documents </caption>\n");
+        tableau.append("<caption class='caption-tab'> Mes documents </caption>\n");
         // Header row
         tableau.append("<thead>\n");
         tableau.append("<tr>\n");
@@ -19,6 +19,10 @@ public class TableauCreator {
         tableau.append("<th>Taille du fichier</th>\n");
         tableau.append("<th>Date de création</th>\n");
         tableau.append("<th>Heure de dernière modification</th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
+        tableau.append("<th></th>\n");
         tableau.append("</tr>\n");
         tableau.append("</thead>\n");
         
@@ -49,8 +53,9 @@ public class TableauCreator {
             }
             tableau.append("</tbody>\n");
             tableau.append("</table>");
+            tableau.append("<br>");
             tableau.append("<table>\n");
-            tableau.append("<caption> Documents partagés </caption>\n");
+            tableau.append("<caption class='caption-tab'> Documents partagés </caption>\n");
             // Header row
             tableau.append("<thead>\n");
             tableau.append("<tr>\n");
@@ -59,6 +64,9 @@ public class TableauCreator {
             tableau.append("<th>Date de création</th>\n");
             tableau.append("<th>Heure de dernière modification</th>\n");
             tableau.append("<th>Partagé par :</th>\n");
+            tableau.append("<th></th>\n");
+            tableau.append("<th></th>\n");
+            tableau.append("<th></th>\n");
             tableau.append("</tr>\n");
             tableau.append("</thead>\n");
 

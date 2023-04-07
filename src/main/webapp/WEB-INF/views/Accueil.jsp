@@ -5,7 +5,7 @@
     <style><%@include file="/WEB-INF/Style/style.css"%></style>
 </head>
 <body>
-    <div align="center">
+    <div class="container" align="center">
         <h1><a rel="dofollow">BigCloud</a></h1>
 
         <h2 class="h2-login">Bienvenue ${Nom}</h2>
