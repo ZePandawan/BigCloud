@@ -28,6 +28,7 @@ public class TableauCreator {
         
         // Data rows
         tableau.append("<tbody>\n");
+        Double sizetotal = 0.0;
         try {
             DataBaseAccess db = new DataBaseAccess();
 
@@ -38,6 +39,7 @@ public class TableauCreator {
                 int id_file = resultSelect.getInt("id_file");
                 String name = resultSelect.getString("name");
                 Double size = resultSelect.getDouble("size");
+                sizetotal += size;
                 String creation_date = resultSelect.getString("creation_date");
                 String time = resultSelect.getString("time");
                 String form = "<td><form method='post'><input type='hidden' name='remove' value='" + id_file + "'><input type='submit' class='button-tab' value='delete'></form>";
@@ -74,7 +76,7 @@ public class TableauCreator {
             tableau.append("<tbody>\n");
             String id_user = null;
             String sqlSelectId = "SELECT id_users FROM Users WHERE name='"+input+"';";
-            System.out.println(sqlSelectId);
+            //System.out.println(sqlSelectId);
             ResultSet resultSelectId = db.executeQuery(sqlSelectId);
             if (!resultSelectId.next()) {
                 System.out.println("Pas de résultat");
@@ -102,6 +104,7 @@ public class TableauCreator {
             }
             tableau.append("</tbody>\n");
             tableau.append("</table>");
+            tableau.append("<br>").append("<caption class='caption-tab'> Espace utilisé: "+sizetotal/1000000+"Mo/1 Go </caption>\n");
             db.close();
         } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
             System.err.println("Erreur de connexion à la base de données : " + e.getMessage());

@@ -25,7 +25,7 @@ public class UploadDataBase {
         String filenameformated = filename.replaceAll(" ", "\\\\ ");
         String localisation = "ls -al /var/BigCloud/"+username+"/"+filenameformated;
         String file_location = "/var/BigCloud/"+username+"/";
-        System.out.println(file_location);
+        //System.out.println(file_location);
         try {
             GetDataFromXML XML_datas = new GetDataFromXML();
             ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -43,7 +43,7 @@ public class UploadDataBase {
 
                 String sqlInsert = "INSERT INTO Files VALUES (null, '"+filename+"', '"+parts[4]+"', '"+parts[6]+" "+parts[5]+"', '"+file_location+"','"+username+"',null, '"+parts[7]+"')";
                 int rowsInserted = db.executeUpdate(sqlInsert);
-                System.out.println(rowsInserted + " ligne inséré dans Files.");
+                //System.out.println(rowsInserted + " ligne inséré dans Files.");
 
                 db.close();
             } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
