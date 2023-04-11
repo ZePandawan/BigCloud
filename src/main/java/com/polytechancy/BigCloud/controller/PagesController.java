@@ -47,19 +47,19 @@ public class PagesController {
 	@PostMapping("/accueil")
 	public String postaccueil(ModelMap model, @RequestParam String remove, HttpSession session) {
 		String nom = (String) session.getAttribute("Nom");
-		System.out.println(nom);
+		//System.out.println(nom);
 		session.setAttribute("Nom", nom);
 		String sqlSelect = "SELECT name,file_location FROM Files WHERE id_file="+remove+";";
 		String[] values = RemoveFile.executeQuery(sqlSelect);
-		System.out.println(values[0]+" "+values[1]);
+		//System.out.println(values[0]+" "+values[1]);
 		try {
 			GetDataFromXML XML_datas = new GetDataFromXML();
 			ResourceLoader resourceLoader = new DefaultResourceLoader();
 			XML_datas.readXmlFile(resourceLoader);
 			SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
 			String output = sshConnector.executeCommand("rm "+values[1]+"'"+values[0]+"'");
-			System.out.println("rm "+values[1]+"'"+values[0]+"'");
-			System.out.println(output);
+			//System.out.println("rm "+values[1]+"'"+values[0]+"'");
+			//System.out.println(output);
 			sshConnector.disconnect();
 		} catch (JSchException | IOException e) {
 			e.printStackTrace();
@@ -69,14 +69,14 @@ public class PagesController {
 			throw new RuntimeException(e);
 		}
 		String sqlDelete = "DELETE FROM Files WHERE id_file="+remove+" AND owner='"+nom+"';";
-		System.out.println(sqlDelete);
+		//System.out.println(sqlDelete);
 		RemoveFile.removeRow(sqlDelete);
 		return "redirect:/accueil";
 	}
 	@GetMapping("/accueil")
 	public String afficherPageAccueil(HttpSession session, ModelMap model) {
 		String nom = (String) session.getAttribute("Nom");
-		System.out.println(nom);
+		//System.out.println(nom);
 		session.setAttribute("Nom",nom);
 		if (nom == null) {
 			return "redirect:/login";
@@ -89,10 +89,10 @@ public class PagesController {
 
 			SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());;
 			String output = sshConnector.executeCommand("ls -al /var/BigCloud/"+nom+"/*");
-			//System.out.println(output);
+			////System.out.println(output);
 			sshConnector.disconnect();
 			String tableauhtml = TableauCreator.generertableau(nom);
-			//System.out.println(tableauhtml);
+			////System.out.println(tableauhtml);
 			model.put("tableau", tableauhtml);
 
 		} catch (JSchException | IOException e) {
@@ -127,7 +127,7 @@ public class PagesController {
 			String sqlSelect = "SELECT mail,password,name FROM Users WHERE mail='"+email+"';";
 			ResultSet resultSelect = db.executeQuery(sqlSelect);
 			if (!resultSelect.next()) {
-				System.out.println("COMPTE INCORRECT (INCONNU)");
+				//System.out.println("COMPTE INCORRECT (INCONNU)");
 				model.put("errorMsg", "Compte incorrect !");
 				return "Login";
 			}
@@ -137,14 +137,14 @@ public class PagesController {
 				name = resultSelect.getString("name");
 				if (!email.equals(mail)) {
 					model.put("errorMsg", "Compte incorrect !");
-					System.out.println("Compte incorrect (MAIL)!");
+					//System.out.println("Compte incorrect (MAIL)!");
 					return "Login";
 				}
 				MD5Hasher hasher = new MD5Hasher();
 				String passwordhashed = hasher.hash(password);
 				if (!loginpassword.equals(passwordhashed)) {
 					model.put("errorMsg", "Compte incorrect !");
-					System.out.println("Compte incorrect (MDP)!");
+					//System.out.println("Compte incorrect (MDP)!");
 					return "Login";
 				}
 				db.close();
@@ -186,7 +186,7 @@ public class PagesController {
 				String passwordhashed = hasher.hash(password);
 				String sqlInsert = "INSERT INTO Users VALUES (null, '"+username+"','"+email+"','"+passwordhashed+"',"+"'1')";
 				int rowsInserted = db.executeUpdate(sqlInsert);
-				System.out.println(rowsInserted + " lignes ont été insérées.");
+				//System.out.println(rowsInserted + " lignes ont été insérées.");
 
 				db.close();
 			} catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
@@ -199,7 +199,7 @@ public class PagesController {
 				XML_datas.readXmlFile(resourceLoader);
 				SshTunnel sshConnector = new SshTunnel(XML_datas.getHost_ssh(), XML_datas.getUser_ssh(), XML_datas.getPassword_ssh());
 				String output = sshConnector.executeCommand("mkdir /var/BigCloud/"+username);
-				System.out.println(output);
+				//System.out.println(output);
 				sshConnector.disconnect();
 			} catch (JSchException | IOException e) {
 				e.printStackTrace();
@@ -222,7 +222,7 @@ public class PagesController {
 		if (nom == null) {
 			return "redirect:/login";
 		}
-		System.out.println(nom);
+		//System.out.println(nom);
 		return "Upload";
 	}
 
@@ -249,12 +249,12 @@ public class PagesController {
 		if (!file.isEmpty()) {
 			String nom = (String) sessionhttp.getAttribute("Nom");
 			sessionhttp.setAttribute("Nom",nom);
-			System.out.println(nom);
+			//System.out.println(nom);
 			String localFilePath = file.getOriginalFilename();
 			Path path = Paths.get(localFilePath);
 			String remoteFilePath = "/var/BigCloud/"+nom+"/"+file.getOriginalFilename();
 			byte[] bytes = file.getBytes();
-			System.out.println(path);
+			//System.out.println(path);
 			Files.write(path, bytes);
 
 

@@ -13,7 +13,7 @@ public class RemoveFile {
         try {
             DataBaseAccess db = new DataBaseAccess();
             int rowsInserted = db.executeUpdate(sqlDelete);
-            System.out.println(rowsInserted + " ligne supprimé dans Files.");
+            //System.out.println(rowsInserted + " ligne supprimé dans Files.");
             db.close();
         } catch (SQLException | IOException | ParserConfigurationException | SAXException e) {
             System.err.println("Erreur de connexion à la base de données : " + e.getMessage());
@@ -25,7 +25,7 @@ public class RemoveFile {
             DataBaseAccess db = new DataBaseAccess();
             ResultSet resultSelect = db.executeQuery(sqlSelect);
             if (!resultSelect.next()) {
-                System.out.println("Pas de résultat");
+                //System.out.println("Pas de résultat");
             } else {
                 String name = resultSelect.getString("name");
                 String file_location = resultSelect.getString("file_location");

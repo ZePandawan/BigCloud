@@ -18,9 +18,9 @@ public class ShareFile {
             DataBaseAccess db = new DataBaseAccess();
             ResultSet resultSelect = db.executeQuery(sqlSelect);
             int rowsInserted = db.executeUpdate(sqlUpdate);
-            System.out.println(rowsInserted + " ligne modifié Files.");
+            //System.out.println(rowsInserted + " ligne modifié Files.");
             if (!resultSelect.next()) {
-                System.out.println("Pas de résultat");
+               // System.out.println("Pas de résultat");
             } else {
                 String name = resultSelect.getString("name");
                 values[0] = name;
